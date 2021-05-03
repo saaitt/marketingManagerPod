@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+  db:
+    image: postgres:13
+    container_name: marketingmanagerpod_db
+    environment:
+    - POSTGRES_DB=marketingmanagerpod
+    - POSTGRES_USER=mmp
+    - POSTGRES_PASSWORD=0000
+    - POSTGRES_HOST=0.0.0.0
+    - POSTGRES_PORT=5432
+    ports:
+    - "5432:5432"
+  flyway:
+    image: boxfuse/flyway:7
+    command: -url=jdbc:postgresql://marketingmanagerpod_db/marketingmanagerpod -user=mmp -password=0000 -connectRetries=60 migrate
+    volumes:
+    - ./migrations:/flyway/sql
+    depends_on:
+    - db

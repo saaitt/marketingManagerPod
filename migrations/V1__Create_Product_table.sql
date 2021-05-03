@@ -1,6 +1,6 @@
 CREATE TABLE products (
-  id SERIAL PRIMARY KEY,
-	Title varchar(200),
-	PageLink  varchar(1000)
+  	id SERIAL PRIMARY KEY,
+	title varchar(200),
+	page_link  varchar(1000)
   
 );

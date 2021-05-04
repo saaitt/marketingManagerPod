@@ -38,6 +38,7 @@ func (i ProductHandler) ListAll(c echo.Context) error {
 
 func (i MarketingHandler) ListAllMarketingProducts(c echo.Context) error {
 	name := c.Param("name")
+	
 	return c.String(http.StatusOK, name)
 }
 
@@ -51,4 +52,14 @@ func (i ProductHandler) CreateProduct(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 	return c.JSON(http.StatusOK, resp)
+}
+
+func (i MarketingHandler) Redirect(c echo.Context) error {
+	uuid := c.Param("marketing_product")
+	pageLink, err := i.Service.ResolvePage(uuid)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.Redirect(http.StatusMovedPermanently, pageLink)
+
 }

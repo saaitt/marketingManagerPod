@@ -39,6 +39,7 @@ func main() {
 	}
 	e.GET("/", product.ListAll)
 	e.POST("/", product.Create)
-	e.GET("/marketer/:name", marketing.ListAllMarketingProducts)
+	e.GET("/marketer/:id", marketing.ListAllMarketingProducts)
+	e.GET("/:marketing_product", marketing.Redirect)
 	e.Logger.Fatal(e.Start(":9876"))
 }

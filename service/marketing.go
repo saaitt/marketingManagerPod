@@ -9,6 +9,8 @@ import (
 type MarketingRepo interface {
 	CreateProduct(item *model.MarketingProduct) error
 	ListAllMarketingProducts(userId int) ([]model.MarketingProduct, error)
+	FindProduct(uuid string) (string, error)
+	IncreaseUrlUsage(uuid string) error
 }
 
 type MarketingService struct {
@@ -54,4 +56,15 @@ func (i MarketingService) ListAllProducts(userId int) ([]response.MarketingRespo
 		})
 	}
 	return responses, nil
+}
+func (i MarketingService) ResolvePage(uuid string) (string, error) {
+	PageLink, err := i.Repo.FindProduct(uuid)
+	if err != nil {
+		return "", err
+	}
+	err = i.Repo.IncreaseUrlUsage(uuid)
+	if err != nil {
+		return "", err
+	}
+	return PageLink, nil
 }

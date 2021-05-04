@@ -7,13 +7,14 @@ import(
 
 )
 
-type Product interface {
+type ProductRepo interface {
 	Create(item *model.Product) error
 	ListAll() ([]model.Product, error)
 }
 
+
 type ProductService struct {
-	Repo Product
+	Repo ProductRepo
 }
 
 func (i ProductService) Create(request request.CreateProductRequest) (*response.ProductResponse, error) {

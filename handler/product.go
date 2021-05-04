@@ -12,6 +12,9 @@ import (
 type ProductHandler struct {
 	Service service.ProductService
 }
+type MarketingHandler struct {
+	Service service.MarketingService
+}
 
 func (i ProductHandler) Create(c echo.Context) error {
 	req := request.CreateProductRequest{}
@@ -27,6 +30,23 @@ func (i ProductHandler) Create(c echo.Context) error {
 
 func (i ProductHandler) ListAll(c echo.Context) error {
 	resp, err := i.Service.ListAll()
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (i MarketingHandler) ListAllMarketingProducts(c echo.Context) error {
+	name := c.Param("name")
+	return c.String(http.StatusOK, name)
+}
+
+func (i ProductHandler) CreateProduct(c echo.Context) error {
+	req := request.CreateProductRequest{}
+	if err := c.Bind(&req); err != nil {
+		return echo.ErrBadRequest
+	}
+	resp, err := i.Service.Create(req)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}

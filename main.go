@@ -23,14 +23,22 @@ func main() {
 	defer db.Close()
 
 	e := echo.New()
-	res := handler.ProductHandler{
+	product := handler.ProductHandler{
 		Service: service.ProductService{
 			Repo: &model.SQLItemRepo{
 				DB: db,
 			},
 		},
 	}
-	e.GET("/", res.ListAll)
-	e.POST("/", res.Create)
+	marketing := handler.MarketingHandler{
+		Service: service.MarketingService{
+			Repo: &model.SQLMarketingRepo{
+				DB: db,
+			},
+		},
+	}
+	e.GET("/", product.ListAll)
+	e.POST("/", product.Create)
+	e.GET("/marketer/:name", marketing.ListAllMarketingProducts)
 	e.Logger.Fatal(e.Start(":9876"))
 }

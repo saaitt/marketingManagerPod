@@ -65,7 +65,7 @@ func (s SQLMarketingRepo) CreateProduct(marketingProduct *MarketingProduct) erro
 	return nil
 }
 
-func (s SQLItemRepo) FindProduct(uuid string) (string, error) {
+func (s SQLMarketingRepo) FindProduct(uuid string) (string, error) {
 	product := Product{}
 	if err := s.DB.Model(&Product{}).Select("products.id, products.title, products.page_url").Joins("inner join marketing_products on marketing_products.productId = products.id").Where("marketing_products.uuid = ?", uuid).Find(&product).Error; err != nil {
 		return "", err

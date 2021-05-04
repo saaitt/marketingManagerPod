@@ -16,10 +16,10 @@ func (Product) TableName() string {
 type MarketingProduct struct {
 	gorm.Model
 	ID         int
-	ProductId  int  `gorm:"index"`
+	ProductId  int     `gorm:"index"`
 	Product    Product `gorm:"foreignkey:id;references:product_id"`
 	UserID     int
-	CountUsage int
+	UsageCount int
 	UUID       string
 }
 

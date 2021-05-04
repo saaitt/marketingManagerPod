@@ -8,7 +8,7 @@ import (
 
 type MarketingRepo interface {
 	CreateProduct(item *model.MarketingProduct) error
-	ListAllMarketingProducts(userId int) ([]model.MarketingProduct, error)
+	ListAllMarketingProductsByUserID(userId int) ([]model.MarketingProduct, error)
 	FindProduct(uuid string) (string, error)
 	IncreaseUrlUsage(uuid string) error
 }
@@ -39,13 +39,13 @@ func (i MarketingService) CreateProduct(product model.Product, userId int) (*res
 	}, nil
 }
 
-func (i MarketingService) ListAllProducts(userId int) ([]response.MarketingResponse, error) {
-	items, err := i.Repo.ListAllMarketingProducts(userId)
+func (i MarketingService) ListAllMarketingProductsByUserID(userId int) ([]response.MarketingResponse, error) {
+	marketingProducts, err := i.Repo.ListAllMarketingProductsByUserID(userId)
 	if err != nil {
 		return nil, err
 	}
 	responses := []response.MarketingResponse{}
-	for _, marketingProduct := range items {
+	for _, marketingProduct := range marketingProducts {
 		responses = append(responses, response.MarketingResponse{
 			ID:         marketingProduct.ID,
 			ProductId:  marketingProduct.ProductId,

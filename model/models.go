@@ -50,7 +50,7 @@ type MarketingProduct struct {
 	UUID       string
 }
 
-func (s SQLMarketingRepo) ListAllMarketingProducts(userId int) ([]MarketingProduct, error) {
+func (s SQLMarketingRepo) ListAllMarketingProductsByUserID(userId int) ([]MarketingProduct, error) {
 	marketingProducts := []MarketingProduct{}
 	if err := s.DB.Model(&MarketingProduct{}).Find(&marketingProducts, "UserID = ?", userId).Error; err != nil {
 		return nil, err

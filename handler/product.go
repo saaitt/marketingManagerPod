@@ -5,6 +5,7 @@ import (
 
 	"github.com/saaitt/marketingManagerPod/request"
 	"github.com/saaitt/marketingManagerPod/service"
+	"strconv"
 
 	"github.com/labstack/echo"
 )
@@ -37,9 +38,15 @@ func (i ProductHandler) ListAll(c echo.Context) error {
 }
 
 func (i MarketingHandler) ListAllMarketingProducts(c echo.Context) error {
-	name := c.Param("name")
-	
-	return c.String(http.StatusOK, name)
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	resp, err := i.Service.ListAllMarketingProductsByUserID(id)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.JSON(http.StatusOK, resp)
 }
 
 func (i ProductHandler) CreateProduct(c echo.Context) error {
@@ -60,6 +67,5 @@ func (i MarketingHandler) Redirect(c echo.Context) error {
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
-	return c.Redirect(http.StatusMovedPermanently, pageLink)
-
+	return c.Redirect(http.StatusTemporaryRedirect, pageLink)
 }

@@ -1,6 +1,9 @@
 package model
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
+)
 
 type Product struct {
 	gorm.Model
@@ -17,73 +20,33 @@ func (MarketingProduct) TableName() string {
 	return "marketing_products"
 }
 
-type SQLItemRepo struct {
-	DB *gorm.DB
-}
-
-func (s SQLItemRepo) Create(product *Product) error {
-	if err := s.DB.Create(&product).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s SQLItemRepo) ListAll() ([]Product, error) {
-	products := []Product{}
-	if err := s.DB.Model(&Product{}).Find(&products).Error; err != nil {
-		return nil, err
-	}
-	return products, nil
-}
-
-func (s SQLItemRepo) FindOne(id int) ([]Product, error) {
-	product := []Product{}
-	if err := s.DB.Model(&Product{}).First(&product, "id = ?", id).Error; err != nil {
-		return nil, err
-	}
-	return product, nil
-}
-type SQLMarketingRepo struct {
-	DB *gorm.DB
-}
-
 type MarketingProduct struct {
 	gorm.Model
 	ID         int
-	ProductId  int     `gorm:"index"`
+	ProductId  int
 	Product    Product `gorm:"foreignkey:id;references:product_id"`
 	UserID     int
 	UsageCount int
 	UUID       string
 }
 
-func (s SQLMarketingRepo) ListAllMarketingProductsByUserID(userId int) ([]MarketingProduct, error) {
-	marketingProducts := []MarketingProduct{}
-	if err := s.DB.Model(&MarketingProduct{}).Find(&marketingProducts, "UserID = ?", userId).Error; err != nil {
-		return nil, err
-	}
-	return marketingProducts, nil
+type User struct {
+	gorm.Model
+	ID           int
+	Username     string
+	PasswordHash string
+	UserType     string
 }
 
-func (s SQLMarketingRepo) CreateProduct(marketingProduct *MarketingProduct) error {
-	if err := s.DB.Create(&marketingProduct).Error; err != nil {
+func (u *User) SetPassword(password string) error {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	if err != nil {
 		return err
 	}
+	u.PasswordHash = string(bytes)
 	return nil
 }
-
-func (s SQLMarketingRepo) FindProduct(uuid string) (string, error) {
-	product := Product{}
-	if err := s.DB.Model(&Product{}).Select("products.id, products.title, products.page_url").Joins("inner join marketing_products on marketing_products.productId = products.id").Where("marketing_products.uuid = ?", uuid).Find(&product).Error; err != nil {
-		return "", err
-	}
-	return product.PageLink, nil
-}
-
-
-func (s SQLMarketingRepo) IncreaseUrlUsage(uuid string) error {
-	if err := s.DB.Exec("UPDATE marketing_products SET UsageCount = UsageCount + 1 WHERE uuid = ?", uuid).Error; err != nil {
-		return err
-	}
-	return nil
+func (u *User) ValidatePassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
+	return err == nil
 }

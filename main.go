@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/saaitt/marketingManagerPod/sql"
 	"os"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/saaitt/marketingManagerPod/handler"
-	"github.com/saaitt/marketingManagerPod/model"
 	"github.com/saaitt/marketingManagerPod/service"
 
 	"github.com/labstack/echo"
@@ -25,17 +25,17 @@ func main() {
 	e := echo.New()
 	product := handler.ProductHandler{
 		Service: service.ProductService{
-			Repo: &model.SQLItemRepo{
+			Repo: &sql.ProductRepo{
 				DB: db,
 			},
 		},
 	}
 	marketing := handler.MarketingHandler{
 		Service: service.MarketingService{
-			MarketingRepo: &model.SQLMarketingRepo{
+			MarketingRepo: &sql.MarketingRepo{
 				DB: db,
 			},
-			ProductRepo: &model.SQLItemRepo{
+			ProductRepo: &sql.ProductRepo{
 				DB: db,
 			},
 		},
@@ -43,7 +43,7 @@ func main() {
 	e.GET("/", product.ListAll)
 	e.POST("/", product.Create)
 	e.GET("/marketing/:id", marketing.ListAllMarketingProducts)
-	e.POST("/marketing/:user_id",marketing.CreateProduct)
+	e.POST("/marketing/:user_id", marketing.CreateProduct)
 	e.GET("/:marketing_product", marketing.Redirect)
 	e.Logger.Fatal(e.Start(":9876"))
 }

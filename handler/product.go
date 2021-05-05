@@ -58,7 +58,7 @@ func (i MarketingHandler) CreateProduct(c echo.Context) error {
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
-	resp, err := i.Service.CreateProduct(req.ID,userId)
+	resp, err := i.Service.CreateProduct(req.ID, userId)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
@@ -72,4 +72,32 @@ func (i MarketingHandler) Redirect(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 	return c.Redirect(http.StatusTemporaryRedirect, pageLink)
+}
+
+type UserHandler struct {
+	Service service.UserService
+}
+
+func (i UserHandler) Create(c echo.Context) error {
+	req := request.CreateUserRequest{}
+	if err := c.Bind(&req); err != nil {
+		return echo.ErrBadRequest
+	}
+	resp, err := i.Service.Create(req)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (i UserHandler) Login(c echo.Context) error {
+	req := request.LoggedInUserRequest{}
+	if err := c.Bind(&req); err != nil {
+		return echo.ErrBadRequest
+	}
+	resp, err := i.Service.Login(req)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.JSON(http.StatusOK, resp)
 }

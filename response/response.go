@@ -18,3 +18,9 @@ type MarketingResponse struct {
 	UsageCount int           `json:"usage_count"`
 	UUID       string        `json:"uuid"`
 }
+
+type UserResponse struct {
+	Username     string `json:"username"`
+	PasswordHash string `json:"password_hash"`
+	UserType     string `json:"user_type"`
+}

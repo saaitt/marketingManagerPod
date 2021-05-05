@@ -49,12 +49,16 @@ func (i MarketingHandler) ListAllMarketingProducts(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (i ProductHandler) CreateProduct(c echo.Context) error {
+func (i MarketingHandler) CreateProduct(c echo.Context) error {
 	req := request.CreateProductRequest{}
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
-	resp, err := i.Service.Create(req)
+	userId, err := strconv.Atoi(c.Param("user_id"))
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	resp, err := i.Service.CreateProduct(req.ID,userId)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}

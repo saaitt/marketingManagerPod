@@ -14,19 +14,25 @@ type MarketingRepo interface {
 }
 
 type MarketingService struct {
-	Repo MarketingRepo
+	MarketingRepo MarketingRepo
+	ProductRepo   ProductRepo
 }
 
-func (i MarketingService) CreateProduct(product model.Product, userId int) (*response.MarketingResponse, error) {
+func (i MarketingService) CreateProduct(productId int,userId int) (*response.MarketingResponse, error) {
+	product, err := i.ProductRepo.FindOne(productId);
+	if  err != nil {
+		return nil, err
+	}
 
 	marketingProduct := model.MarketingProduct{
-		ProductId:  product.ID,
-		Product:    product,
+		ProductId:  product[0].ID,
+		Product:    product[0],
 		UserID:     userId,
 		UsageCount: 0,
 		UUID:       uuid.New().String(),
 	}
-	if err := i.Repo.CreateProduct(&marketingProduct); err != nil {
+
+	if err := i.MarketingRepo.CreateProduct(&marketingProduct); err != nil {
 		return nil, err
 	}
 	return &response.MarketingResponse{
@@ -40,7 +46,7 @@ func (i MarketingService) CreateProduct(product model.Product, userId int) (*res
 }
 
 func (i MarketingService) ListAllMarketingProductsByUserID(userId int) ([]response.MarketingResponse, error) {
-	marketingProducts, err := i.Repo.ListAllMarketingProductsByUserID(userId)
+	marketingProducts, err := i.MarketingRepo.ListAllMarketingProductsByUserID(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -58,11 +64,11 @@ func (i MarketingService) ListAllMarketingProductsByUserID(userId int) ([]respon
 	return responses, nil
 }
 func (i MarketingService) ResolvePage(uuid string) (string, error) {
-	PageLink, err := i.Repo.FindProduct(uuid)
+	PageLink, err := i.MarketingRepo.FindProduct(uuid)
 	if err != nil {
 		return "", err
 	}
-	err = i.Repo.IncreaseUrlUsage(uuid)
+	err = i.MarketingRepo.IncreaseUrlUsage(uuid)
 	if err != nil {
 		return "", err
 	}

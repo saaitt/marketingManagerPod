@@ -32,14 +32,18 @@ func main() {
 	}
 	marketing := handler.MarketingHandler{
 		Service: service.MarketingService{
-			Repo: &model.SQLMarketingRepo{
+			MarketingRepo: &model.SQLMarketingRepo{
+				DB: db,
+			},
+			ProductRepo: &model.SQLItemRepo{
 				DB: db,
 			},
 		},
 	}
 	e.GET("/", product.ListAll)
 	e.POST("/", product.Create)
-	e.GET("/marketer/:id", marketing.ListAllMarketingProducts)
+	e.GET("/marketing/:id", marketing.ListAllMarketingProducts)
+	e.POST("/marketing/:user_id",marketing.CreateProduct)
 	e.GET("/:marketing_product", marketing.Redirect)
 	e.Logger.Fatal(e.Start(":9876"))
 }

@@ -36,6 +36,13 @@ func (s SQLItemRepo) ListAll() ([]Product, error) {
 	return products, nil
 }
 
+func (s SQLItemRepo) FindOne(id int) ([]Product, error) {
+	product := []Product{}
+	if err := s.DB.Model(&Product{}).First(&product, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return product, nil
+}
 type SQLMarketingRepo struct {
 	DB *gorm.DB
 }

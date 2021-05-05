@@ -4,12 +4,12 @@ import(
 	"github.com/saaitt/marketingManagerPod/model"
 	"github.com/saaitt/marketingManagerPod/request"
 	"github.com/saaitt/marketingManagerPod/response"
-
 )
 
 type ProductRepo interface {
 	Create(item *model.Product) error
 	ListAll() ([]model.Product, error)
+	FindOne(id int) ([]model.Product, error)
 }
 
 
@@ -37,6 +37,21 @@ func (i ProductService) Create(request request.CreateProductRequest) (*response.
 
 func (i ProductService) ListAll() ([]response.ProductResponse, error) {
 	items, err := i.Repo.ListAll()
+	if err != nil {
+		return nil, err
+	}
+	responses := []response.ProductResponse{}
+	for _, product := range items {
+		responses = append(responses, response.ProductResponse{
+			ID:    product.ID,
+			Title: product.Title,
+			PageLink:  product.PageLink,
+		})
+	}
+	return responses, nil
+}
+func (i ProductService) FindOne(id int) ([]response.ProductResponse, error) {
+	items, err := i.Repo.FindOne(id)
 	if err != nil {
 		return nil, err
 	}

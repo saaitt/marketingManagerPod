@@ -10,6 +10,7 @@ type Product struct {
 	ID       int
 	Title    string
 	PageLink string
+	UserID   int
 }
 
 func (Product) TableName() string {
@@ -29,6 +30,15 @@ type MarketingProduct struct {
 	UsageCount int
 	UUID       string
 }
+
+func (User) TableName() string {
+	return "users"
+}
+
+const (
+	UserTypeAdmin    = "admin"
+	UserTypeMarketer = "marketer"
+)
 
 type User struct {
 	gorm.Model

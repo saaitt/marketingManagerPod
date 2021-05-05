@@ -2,8 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/saaitt/marketingManagerPod/sql"
 	"os"
+
+	customMiddleware "github.com/saaitt/marketingManagerPod/middleware"
+
+	"github.com/saaitt/marketingManagerPod/model"
+	"github.com/saaitt/marketingManagerPod/sql"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -40,10 +44,17 @@ func main() {
 			},
 		},
 	}
-	e.GET("/", product.ListAll)
-	e.POST("/", product.Create)
-	e.GET("/marketing/:id", marketing.ListAllMarketingProducts)
-	e.POST("/marketing/:user_id", marketing.CreateProduct)
+	userService := service.UserService{Repo: &sql.UserRepo{DB: db}}
+	userHandler := handler.UserHandler{Service: userService}
+	adminGroup := e.Group("/admin")
+	adminGroup.GET("", product.FindByUser)
+	adminGroup.POST("", product.Create)
+	adminGroup.Use(customMiddleware.BasicAuthMiddlewareForUserType(userService, model.UserTypeAdmin))
+	marketingGroup := e.Group("/marketing")
+	marketingGroup.GET("/:id", marketing.ListAllMarketingProducts)
+	marketingGroup.POST("/:user_id", marketing.CreateProduct)
+	adminGroup.Use(customMiddleware.BasicAuthMiddlewareForUserType(userService, model.UserTypeMarketer))
 	e.GET("/:marketing_product", marketing.Redirect)
+	e.POST("/users/", userHandler.Create)
 	e.Logger.Fatal(e.Start(":9876"))
 }

@@ -6,6 +6,7 @@ type CreateProductRequest struct {
 	Title    string `json:"title"`
 	ID       int    `json:"id"`
 	PageLink string `json:"pageLink"`
+	UserID   int    `json:"user_id"`
 }
 
 func (c CreateProductRequest) Validate() error {
@@ -52,17 +53,8 @@ func (c CreateUserRequest) Validate() error {
 	return nil
 }
 
-type LoggedInUserRequest struct {
-	Username     string `json:"username"`
-	PasswordHash string `json:"password_hash"`
-}
-
-func (c LoggedInUserRequest) Validate() error {
-	if c.Username == "" {
-		return errors.New("username id is required")
-	}
-	if c.PasswordHash == "" {
-		return errors.New("password hash id is required")
-	}
-	return nil
+type AuthenticationRequest struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }

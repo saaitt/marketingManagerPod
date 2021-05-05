@@ -3,9 +3,10 @@ package handler
 import (
 	"net/http"
 
+	"strconv"
+
 	"github.com/saaitt/marketingManagerPod/request"
 	"github.com/saaitt/marketingManagerPod/service"
-	"strconv"
 
 	"github.com/labstack/echo"
 )
@@ -17,11 +18,20 @@ type MarketingHandler struct {
 	Service service.MarketingService
 }
 
+const (
+	UserTypeKey = "userTypeKey"
+	UserIdKey   = "userId"
+)
+
+func getUserId(c echo.Context) int {
+	return c.Get(UserIdKey).(int)
+}
 func (i ProductHandler) Create(c echo.Context) error {
 	req := request.CreateProductRequest{}
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
+	req.UserID = getUserId(c)
 	resp, err := i.Service.Create(req)
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -29,8 +39,8 @@ func (i ProductHandler) Create(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (i ProductHandler) ListAll(c echo.Context) error {
-	resp, err := i.Service.ListAll()
+func (i ProductHandler) FindByUser(c echo.Context) error {
+	resp, err := i.Service.FindByUser(getUserId(c))
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
@@ -84,18 +94,6 @@ func (i UserHandler) Create(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 	resp, err := i.Service.Create(req)
-	if err != nil {
-		return echo.ErrInternalServerError
-	}
-	return c.JSON(http.StatusOK, resp)
-}
-
-func (i UserHandler) Login(c echo.Context) error {
-	req := request.LoggedInUserRequest{}
-	if err := c.Bind(&req); err != nil {
-		return echo.ErrBadRequest
-	}
-	resp, err := i.Service.Login(req)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}

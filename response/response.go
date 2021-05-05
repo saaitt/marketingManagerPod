@@ -8,6 +8,7 @@ type ProductResponse struct {
 	ID       int    `json:"id"`
 	Title    string `json:"title"`
 	PageLink string `json:"pageLink"`
+	UserID   int    `json:"user_id"`
 }
 
 type MarketingResponse struct {
@@ -20,7 +21,7 @@ type MarketingResponse struct {
 }
 
 type UserResponse struct {
-	Username     string `json:"username"`
-	PasswordHash string `json:"password_hash"`
-	UserType     string `json:"user_type"`
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+	UserType string `json:"user_type"`
 }

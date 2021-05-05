@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-type ProductHandler struct {
+type ProductAdminHandler struct {
 	Service service.ProductAdminService
 }
 type MarketingHandler struct {
@@ -24,7 +24,7 @@ const (
 func getUserId(c echo.Context) int {
 	return c.Get(UserIdKey).(int)
 }
-func (i ProductHandler) Create(c echo.Context) error {
+func (i ProductAdminHandler) Create(c echo.Context) error {
 	req := request.CreateProductRequest{}
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
@@ -37,7 +37,7 @@ func (i ProductHandler) Create(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (i ProductHandler) FindByUser(c echo.Context) error {
+func (i ProductAdminHandler) FindByUser(c echo.Context) error {
 	resp, err := i.Service.FindByUser(getUserId(c))
 	if err != nil {
 		return echo.ErrInternalServerError

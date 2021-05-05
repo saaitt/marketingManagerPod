@@ -27,7 +27,7 @@ func main() {
 	defer db.Close()
 
 	e := echo.New()
-	product := handler.ProductHandler{
+	product := handler.ProductAdminHandler{
 		Service: service.ProductAdminService{
 			Repo: &sql.ProductRepo{
 				DB: db,

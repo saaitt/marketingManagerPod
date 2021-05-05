@@ -24,10 +24,10 @@ func (s ProductRepo) FindByUser(userID int) ([]model.Product, error) {
 	return products, nil
 }
 
-func (s ProductRepo) FindOne(id int) ([]model.Product, error) {
-	product := []model.Product{}
+func (s ProductRepo) FindByID(id int) (*model.Product, error) {
+	product := model.Product{}
 	if err := s.DB.Model(&model.Product{}).First(&product, "id = ?", id).Error; err != nil {
 		return nil, err
 	}
-	return product, nil
+	return &product, nil
 }

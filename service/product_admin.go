@@ -9,7 +9,7 @@ import (
 type ProductRepo interface {
 	Create(item *model.Product) error
 	FindByUser(userID int) ([]model.Product, error)
-	FindOne(id int) ([]model.Product, error)
+	FindByID(id int) (*model.Product, error)
 }
 
 type ProductAdminService struct {
@@ -38,21 +38,6 @@ func (i ProductAdminService) Create(request request.CreateProductRequest) (*resp
 
 func (i ProductAdminService) FindByUser(userID int) ([]response.ProductResponse, error) {
 	items, err := i.Repo.FindByUser(userID)
-	if err != nil {
-		return nil, err
-	}
-	responses := []response.ProductResponse{}
-	for _, product := range items {
-		responses = append(responses, response.ProductResponse{
-			ID:       product.ID,
-			Title:    product.Title,
-			PageLink: product.PageLink,
-		})
-	}
-	return responses, nil
-}
-func (i ProductAdminService) FindOne(id int) ([]response.ProductResponse, error) {
-	items, err := i.Repo.FindOne(id)
 	if err != nil {
 		return nil, err
 	}

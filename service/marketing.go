@@ -19,14 +19,14 @@ type MarketingService struct {
 }
 
 func (i MarketingService) CreateProduct(productId int, userId int) (*response.MarketingResponse, error) {
-	product, err := i.ProductRepo.FindOne(productId)
+	product, err := i.ProductRepo.FindByID(productId)
 	if err != nil {
 		return nil, err
 	}
 
 	marketingProduct := model.MarketingProduct{
-		ProductId:  product[0].ID,
-		Product:    product[0],
+		ProductId:  product.ID,
+		Product:    *product,
 		UserID:     userId,
 		UsageCount: 0,
 		UUID:       uuid.New().String(),

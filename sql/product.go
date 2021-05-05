@@ -16,9 +16,9 @@ func (s ProductRepo) Create(product *model.Product) error {
 	return nil
 }
 
-func (s ProductRepo) ListAll() ([]model.Product, error) {
+func (s ProductRepo) FindByUser(userID int) ([]model.Product, error) {
 	products := []model.Product{}
-	if err := s.DB.Model(&model.Product{}).Find(&products).Error; err != nil {
+	if err := s.DB.Model(&model.Product{}).Where("user_id = ?", userID).Find(&products).Error; err != nil {
 		return nil, err
 	}
 	return products, nil

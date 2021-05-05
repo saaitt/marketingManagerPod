@@ -8,15 +8,15 @@ import (
 
 type ProductRepo interface {
 	Create(item *model.Product) error
-	ListAll() ([]model.Product, error)
+	FindByUser(userID int) ([]model.Product, error)
 	FindOne(id int) ([]model.Product, error)
 }
 
-type ProductService struct {
+type ProductAdminService struct {
 	Repo ProductRepo
 }
 
-func (i ProductService) Create(request request.CreateProductRequest) (*response.ProductResponse, error) {
+func (i ProductAdminService) Create(request request.CreateProductRequest) (*response.ProductResponse, error) {
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
@@ -36,8 +36,8 @@ func (i ProductService) Create(request request.CreateProductRequest) (*response.
 	}, nil
 }
 
-func (i ProductService) FindByUser(int) ([]response.ProductResponse, error) {
-	items, err := i.Repo.ListAll()
+func (i ProductAdminService) FindByUser(userID int) ([]response.ProductResponse, error) {
+	items, err := i.Repo.FindByUser(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (i ProductService) FindByUser(int) ([]response.ProductResponse, error) {
 	}
 	return responses, nil
 }
-func (i ProductService) FindOne(id int) ([]response.ProductResponse, error) {
+func (i ProductAdminService) FindOne(id int) ([]response.ProductResponse, error) {
 	items, err := i.Repo.FindOne(id)
 	if err != nil {
 		return nil, err

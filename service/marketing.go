@@ -18,9 +18,9 @@ type MarketingService struct {
 	ProductRepo   ProductRepo
 }
 
-func (i MarketingService) CreateProduct(productId int,userId int) (*response.MarketingResponse, error) {
-	product, err := i.ProductRepo.FindOne(productId);
-	if  err != nil {
+func (i MarketingService) CreateProduct(productId int, userId int) (*response.MarketingResponse, error) {
+	product, err := i.ProductRepo.FindOne(productId)
+	if err != nil {
 		return nil, err
 	}
 

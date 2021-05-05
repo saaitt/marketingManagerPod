@@ -12,7 +12,7 @@ import (
 )
 
 type ProductHandler struct {
-	Service service.ProductService
+	Service service.ProductAdminService
 }
 type MarketingHandler struct {
 	Service service.MarketingService

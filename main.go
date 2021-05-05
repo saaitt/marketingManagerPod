@@ -28,7 +28,7 @@ func main() {
 
 	e := echo.New()
 	product := handler.ProductHandler{
-		Service: service.ProductService{
+		Service: service.ProductAdminService{
 			Repo: &sql.ProductRepo{
 				DB: db,
 			},

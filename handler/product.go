@@ -3,8 +3,6 @@ package handler
 import (
 	"net/http"
 
-	"strconv"
-
 	"github.com/saaitt/marketingManagerPod/request"
 	"github.com/saaitt/marketingManagerPod/service"
 
@@ -47,12 +45,8 @@ func (i ProductHandler) FindByUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (i MarketingHandler) ListAllMarketingProducts(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return echo.ErrInternalServerError
-	}
-	resp, err := i.Service.ListAllMarketingProductsByUserID(id)
+func (i MarketingHandler) FindByUser(c echo.Context) error {
+	resp, err := i.Service.FindByUserID(getUserId(c))
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
@@ -64,11 +58,7 @@ func (i MarketingHandler) CreateProduct(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
-	userId, err := strconv.Atoi(c.Param("user_id"))
-	if err != nil {
-		return echo.ErrInternalServerError
-	}
-	resp, err := i.Service.CreateProduct(req.ID, userId)
+	resp, err := i.Service.CreateProduct(req.ID, getUserId(c))
 	if err != nil {
 		return echo.ErrInternalServerError
 	}

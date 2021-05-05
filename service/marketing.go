@@ -8,7 +8,7 @@ import (
 
 type MarketingRepo interface {
 	CreateProduct(item *model.MarketingProduct) error
-	ListAllMarketingProductsByUserID(userId int) ([]model.MarketingProduct, error)
+	FindByUserID(userId int) ([]model.MarketingProduct, error)
 	FindProduct(uuid string) (string, error)
 	IncreaseUrlUsage(uuid string) error
 }
@@ -45,8 +45,8 @@ func (i MarketingService) CreateProduct(productId int, userId int) (*response.Ma
 	}, nil
 }
 
-func (i MarketingService) ListAllMarketingProductsByUserID(userId int) ([]response.MarketingResponse, error) {
-	marketingProducts, err := i.MarketingRepo.ListAllMarketingProductsByUserID(userId)
+func (i MarketingService) FindByUserID(userId int) ([]response.MarketingResponse, error) {
+	marketingProducts, err := i.MarketingRepo.FindByUserID(userId)
 	if err != nil {
 		return nil, err
 	}

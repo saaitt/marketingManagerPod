@@ -9,9 +9,9 @@ type MarketingRepo struct {
 	DB *gorm.DB
 }
 
-func (s MarketingRepo) ListAllMarketingProductsByUserID(userId int) ([]model.MarketingProduct, error) {
+func (s MarketingRepo) FindByUserID(userId int) ([]model.MarketingProduct, error) {
 	marketingProducts := []model.MarketingProduct{}
-	if err := s.DB.Model(&model.MarketingProduct{}).Find(&marketingProducts, "UserID = ?", userId).Error; err != nil {
+	if err := s.DB.Model(&model.MarketingProduct{}).Find(&marketingProducts, "user_id = ?", userId).Error; err != nil {
 		return nil, err
 	}
 	return marketingProducts, nil
